@@ -2,3 +2,4 @@ pywikibot
 requests
 bs4
 requests-oauthlib
+ipython

@@ -5,17 +5,7 @@ from pywikibot.bot import CurrentPageBot
 
 
 def replace_templates(title, text):
-    """
-    Update the templates.
-
-    @param title: Title of the current page
-    @type title: str
-    @param text: Wikitext of the current page
-    @type text: str
-
-    @return: Modified wikitext
-    @rtype: str
-    """
+    """Brings templates up to standard."""
     # New lua module no longer requires "rac-pl" and "racine-pl" parameters
     m = re.search(r"{{sv-nom-c-or\|(rac-pl|racine-pl)=(?P<root>[a-z-äöå]+)}}", text)
     if m and m.group('root') == title[:-1]:
@@ -24,22 +14,25 @@ def replace_templates(title, text):
     # Uncountable nouns must use the appropriate template : {{sv-nom-c-ind}}
     text = re.sub(r"{{sv-nom-c-or\|nopl=oui}}", "{{sv-nom-c-ind|n=}}", text)
 
-    # Add empty pronounciation template on the page
-    word, gender = '', ''
-    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{(?P<gender>(n|c|f|m))}}",
-                  "'''%s''' {{pron||sv}} {{%s}}" % (word, gender),
-                  text
-    )
     # {{genre}} {{pron}} -> {{pron}} {{genre}}
-    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{(?P<gender>(n|c|f|m))}} {{pron\|\|sv}}",
-                  "'''%s''' {{pron||sv}} {{%s}}" % (word, gender),
-                  text
+    word, gender = '', ''
+    genders = '(?P<gender>(n|c|f|m|mf|mf \?|msing|fsing|mplur|fplur|p|sp))'
+    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{" + genders + "}} {{pron\|\|sv}}",
+                  "'''\g<word>''' {{pron||sv}} {{\g<gender>}}",
+                  text,
     )
+
+    # Add missing pronounciation template on the page
+    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{" + genders + "}}",
+                  "'''\g<word>''' {{pron||sv}} {{\g<gender>}}",
+                  text,
+    )
+
     # replace {{cf}} by {{compos}}
     word1, word2 = '', ''
     text = re.sub(r"{{cf\|(?P<word1>[a-z-äöå]+)\|(?P<word2>[a-z-äöå]+)\|lang=sv}}",
-                  "{{compos|%s|%s|lang=sv}}" % (word1, word2),
-                  text
+                  "{{compos|m=1|\g<word1>|\g<word2>|lang=sv}}",
+                  text,
     )
 
     return text
