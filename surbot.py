@@ -1,13 +1,27 @@
 import re
+import sys
 
 import pywikibot
 from pywikibot.bot import CurrentPageBot
+from pywikibot import pagegenerators
 
+
+def parser(func):
+    def wrapper(fn, title, text, **kwargs):
+        t, beg, end = get_section(text, **kwargs)
+        t = fn(title, t)
+        return text[:beg] + t + text[(beg+end):]
+    return wrapper
+
+@parser
+def modify_wikitext(fn, title, text, **kwargs):
+    return text
 
 def replace_templates(title, text):
     """Brings templates up to standard."""
     # New lua module no longer requires "rac-pl" and "racine-pl" parameters
-    m = re.search(r"{{sv-nom-c-or\|(rac-pl|racine-pl)=(?P<root>[a-z-äöå]+)}}", text)
+    m = re.search(r"{{sv-nom-c-or\|(rac-pl|racine-pl)=(?P<root>[a-z-äöå]+)}}",
+                  text)
     if m and m.group('root') == title[:-1]:
         text = text.replace(m.group(), "{{sv-nom-c-or}}")
 
@@ -28,14 +42,36 @@ def replace_templates(title, text):
                   text,
     )
 
+    return text
+
+def replace_etymology(title, text):
     # replace {{cf}} by {{compos}}
     word1, word2 = '', ''
     text = re.sub(r"{{cf\|(?P<word1>[a-z-äöå]+)\|(?P<word2>[a-z-äöå]+)\|lang=sv}}",
                   "{{compos|m=1|\g<word1>|\g<word2>|lang=sv}}",
                   text,
     )
-
     return text
+
+def get_section(text, lang='sv', **kwargs):
+    begin, end = 0, len(text)
+    if not kwargs:
+        s = re.search(r'=* *{{langue\|' + lang + '}}', text)
+    else:
+        s = re.search(r'=* *{{S\|' + kwargs['section'] + r'(\||})', text)
+    if not s:
+        return None, begin, end
+
+    begin = s.start()
+    text = text[s.start():]
+    if not kwargs:
+        s = re.search(r'\n== *{{langue\|(?!' + lang + r'}).*} *=', text)
+    else:
+        s = re.search(r'\n=* *{{S\|(?!' + kwargs['section'] + r').*}} *=', text)
+    if s:
+        end = s.start()
+        text = text[:s.start()]
+    return text, begin, end
 
 
 class MyBot(CurrentPageBot):
@@ -52,15 +88,20 @@ class MyBot(CurrentPageBot):
         """
         Loads the given page, does some changes, and saves it.
         """
+        title = page.title()
         text = self.load(page)
         if not text:
             return
 
         # Filters special pages and words not ending by letter "a"
-        if not page.title().endswith('a') or ':' in page.title():
+        if not title.endswith('a') or ':' in title:
             return
+
         # Analyze and modify (or not) the wikitext
-        page.text = replace_templates(page.title(), text)
+        text = modify_wikitext(replace_templates, title, text)
+        text = modify_wikitext(replace_etymology, title, text,
+                               **{'section': 'étymologie'})
+        page.text = text
 
         if not page.text == page.get():
             page.save(summary=self.summary)
@@ -85,9 +126,9 @@ class MyBot(CurrentPageBot):
 
 
 if __name__ == '__main__':
-    summary = 'supprime paramètre devenu inutile'
+    summary = 'mise en forme'
     site = pywikibot.Site('fr', fam='wiktionary')
-    model = pywikibot.Page(site, 'Modèle:sv-nom-c-or')
-    gen = model.getReferences(total=40)
+    cat = pywikibot.Category(site, 'Catégorie:suédois')
+    gen = pagegenerators.CategorizedPageGenerator(cat)
     bot = MyBot(site, gen, summary)
     bot.run()

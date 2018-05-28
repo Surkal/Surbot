@@ -1,6 +1,7 @@
 import unittest
+from unittest.mock import MagicMock
 
-from surbot import replace_templates
+from surbot import MyBot, replace_templates, replace_etymology
 
 
 class TestRegex(unittest.TestCase):
@@ -37,9 +38,9 @@ class TestRegex(unittest.TestCase):
         self.assertEqual(replace_templates('titel', "'''titel''' {{%s}} {{pron||sv}}" % gender), "'''titel''' {{%s}} {{pron||sv}}" % gender)
 
     def test_replace_cf_by_compos(self):
-        self.assertEqual(replace_templates('avtjäna', ': {{cf|av-|tjäna|lang=sv}}.\n\n'), ': {{compos|m=1|av-|tjäna|lang=sv}}.\n\n')
+        self.assertEqual(replace_etymology('titel', ': {{cf|av-|tjäna|lang=sv}}.\n\n'), ': {{compos|m=1|av-|tjäna|lang=sv}}.\n\n')
         # wrong language, do nothing
-        self.assertEqual(replace_templates('avtjäna', ': {{cf|av-|tjäna|lang=nul}}.\n\n'), ': {{cf|av-|tjäna|lang=nul}}.\n\n')
+        self.assertEqual(replace_etymology('titel', ': {{cf|av-|tjäna|lang=nul}}.\n\n'), ': {{cf|av-|tjäna|lang=nul}}.\n\n')
 
     def test_add_missing_pronounciation(self):
         for gender in self.genders:
