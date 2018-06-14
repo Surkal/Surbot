@@ -9,6 +9,10 @@ from pywikibot import pagegenerators
 def parser(func):
     def wrapper(fn, title, text, **kwargs):
         t, beg, end = get_section(text, **kwargs)
+        # If section not found, give up
+        if not t:
+            pywikibot.output(f"Section {kwargs['section']} not found")
+            return text
         t = fn(title, t)
         return text[:beg] + t + text[(beg+end):]
     return wrapper
@@ -22,7 +26,7 @@ def replace_templates(title, text):
     # New lua module no longer requires "rac-pl" and "racine-pl" parameters
     m = re.search(r"{{sv-nom-c-or\|(rac-pl|racine-pl)=(?P<root>[a-z-äöå]+)}}",
                   text)
-    if m and m.group('root') == title[:-1]:
+    if m and m.group('root') == title[:-1] and title.endswith('a'):
         text = text.replace(m.group(), "{{sv-nom-c-or}}")
 
     # Uncountable nouns must use the appropriate template : {{sv-nom-c-ind}}
@@ -43,6 +47,35 @@ def replace_templates(title, text):
     )
 
     return text
+
+def create_inflection(inflection, case, title):
+    #TODO: add template 'voir' if necessary
+    inflection.text = """== {{langue|sv}} ==
+=== {{S|nom|sv|flexion}} ===
+{{sv-nom-c-or|mot=%s}}
+'''{{subst:PAGENAME}}''' {{pron||sv}}
+# ''%s de'' {{lien|%s|sv}}.""" % (title, case, title)
+    #inflection.save(summary="forme conjuguée")
+
+def get_inflections(site, page):
+    title = page.title()
+    root = title[:-1]
+    infl = {
+        'Singulier défini': 'an',
+        'Pluriel indéfini': 'or',
+        'Pluriel défini': 'orna'
+    }
+    for key, value in infl.items():
+        inflection = pywikibot.Page(site, root + value)
+        if not inflection.exists():
+            if not page in list(inflection.getReferences()):
+                pywikibot.output(f"Problème de déclinaisons sur la page {title}")
+                continue
+            create_inflection(inflection, key, title)
+            continue
+        pywikibot.output(f"Page {root+value} already exists.")
+        with open('page_to_create.txt', 'a') as f:
+            f.write(f"{title}, {root+value}\n")
 
 def replace_etymology(title, text):
     # replace {{cf}} by {{compos}}
@@ -98,9 +131,13 @@ class MyBot(CurrentPageBot):
             return
 
         # Analyze and modify (or not) the wikitext
+        pywikibot.output(f"Current page : {title}")
         text = modify_wikitext(replace_templates, title, text)
-        text = modify_wikitext(replace_etymology, title, text,
-                               **{'section': 'étymologie'})
+        text = modify_wikitext(replace_etymology, title, text, **{'section': 'étymologie'})
+
+        if '{{sv-nom-c-or}}' in text:
+            get_inflections(self.site, page)
+
         page.text = text
 
         if not page.text == page.get():
@@ -126,8 +163,11 @@ class MyBot(CurrentPageBot):
 
 
 if __name__ == '__main__':
+    #TODO: Detecter les verbes à particule
     summary = 'mise en forme'
     site = pywikibot.Site('fr', fam='wiktionary')
+    #page = pywikibot.Page(site, 'Modèle:sv-nom-c-or')
+    #gen = page.getReferences()
     cat = pywikibot.Category(site, 'Catégorie:suédois')
     gen = pagegenerators.CategorizedPageGenerator(cat)
     bot = MyBot(site, gen, summary)
