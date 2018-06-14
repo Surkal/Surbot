@@ -55,7 +55,8 @@ def uttal(page, text, section):
         return text
 
     # Find the gender on the fr.wikt page
-    pattern = re.compile('{{(?P<gender>(m|f|mf|mf \?|msing|fsing|mplur|fplur|p|sp))(\|équiv=(?P<equiv>.+)|)}}',
+    pattern = re.compile('{{(?P<gender>(m|f|mf|mf \?|msing|fsing|mplur|\
+                         fplur|p|sp))(\|équiv=(?P<equiv>.+)|)}}',
                          re.UNICODE
     )
     g = re.search(pattern, t)
@@ -99,25 +100,27 @@ def uttal(page, text, section):
     # Text editing
     if not '{{fr-subst-' in text:
         text = text.replace('{{subst|fr}}', '{{fr-subst-%s}}' % gender)
-    print(title, gender, ipa, sound_file)
     if not '{{uttal|' in text and gender and ipa and sound_file:
-        print(1)
-        text = re.sub(re.compile("^'''" + title + "'''( {{\w+}}|)$", re.MULTILINE),
-                      "'''%s''' {{%s}}\n*{{uttal|fr|ipa=%s|ljud=%s}}" % (title, gender, ipa, sound_file),
+        pattern = re.compile("^'''" + title + "'''( {{\w+}}|)$", re.MULTILINE)
+        text = re.sub(pattern,
+                      "'''%s''' {{%s}}\n*{{uttal|fr|ipa=%s|ljud=%s}}" %
+                      (title, gender, ipa, sound_file),
                       text
         )
     elif not '{{uttal|' in text and gender and ipa:
-        print(2)
         text = re.sub(re.compile("^'''" + title + "'''( {{\w+}}|)$", re.MULTILINE),
                       "'''%s''' {{%s}}\n*{{uttal|fr|ipa=%s}}" % (title, gender, ipa),
                       text
         )
     elif '{{uttal|' in text and ipa and sound_file:
-        print(3)
-        pattern = re.compile("^'''" + title + "'''( {{\w+}}|)$.*{{uttal\|fr\|ipa=" + ipa + "}}$",
+        pattern = re.compile("^'''" + title + "'''( {{\w+}}|)$.*\
+                             {{uttal\|fr\|ipa=" + ipa + "}}$",
                              re.MULTILINE | re.UNICODE | re.DOTALL
         )
-        text = re.sub(pattern, "'''%s''' {{%s}}\n*{{uttal|fr|ipa=%s|ljud=%s}}" % (title, gender, ipa, sound_file), text)
+        text = re.sub(pattern, "'''%s''' {{%s}}\n*{{uttal|fr|ipa=%s|ljud=%s}}" %
+                     (title, gender, ipa, sound_file),
+                     text
+        )
 
     return text
 
