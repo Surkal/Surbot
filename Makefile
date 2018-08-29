@@ -6,5 +6,8 @@ build:
 shell:
 	docker run -it --rm -v $PWD:/src surbot /bin/bash
 
-tests:
-	$(DOCKER) python -m unittest
+test:
+	$(DOCKER) python -m unittest -v
+
+coverage:
+	$(DOCKER) coverage run -m unittest

@@ -4,3 +4,7 @@ pywikibot*
 apicache*
 *.ctrl
 user-*
+books/*
+htmlcov/*
+frwikt/*
+svwikt/*

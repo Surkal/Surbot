@@ -3,3 +3,6 @@ requests
 bs4
 requests-oauthlib
 ipython
+requests_html
+ebooklib
+coverage

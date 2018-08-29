@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM python:3.7
 
 # Working directory for the application
 ENV APPLICATION_ROOT /src/

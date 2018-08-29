@@ -5,106 +5,95 @@ import pywikibot
 from pywikibot.bot import CurrentPageBot
 from pywikibot import pagegenerators
 
-
 def parser(func):
-    def wrapper(fn, title, text, **kwargs):
-        t, beg, end = get_section(text, **kwargs)
-        # If section not found, give up
+    """
+    Decorator that :
+    - isolates the part of the text being worked on
+    - calls the function
+    - then returns the complete text with the changes made
+
+    Ideally, this decorator should be called for each function that
+    modifies the wikitext.
+    """
+    def wrapper(page, text, lang='sv', section=''):
+        # extract from the page the part we need
+        t, beg, end, beg_, end_ = parsing(text, lang, section)
         if not t:
-            pywikibot.output(f"Section {kwargs['section']} not found")
             return text
-        t = fn(title, t)
-        return text[:beg] + t + text[(beg+end):]
+
+        # working part
+        t = func(page, t, lang, section)
+
+        # reformation of the page
+        if not section:
+            return text[:beg] + t + text[beg+end:]
+        return text[:beg+beg_] + t + text[beg+beg_+end_:]
     return wrapper
 
-@parser
-def modify_wikitext(fn, title, text, **kwargs):
-    return text
-
-def replace_templates(title, text):
-    """Brings templates up to standard."""
-    # New lua module no longer requires "rac-pl" and "racine-pl" parameters
-    m = re.search(r"{{sv-nom-c-or\|(rac-pl|racine-pl)=(?P<root>[a-z-äöå]+)}}",
-                  text)
-    if m and m.group('root') == title[:-1] and title.endswith('a'):
-        text = text.replace(m.group(), "{{sv-nom-c-or}}")
-
-    # Uncountable nouns must use the appropriate template : {{sv-nom-c-ind}}
-    text = re.sub(r"{{sv-nom-c-or\|nopl=oui}}", "{{sv-nom-c-ind|n=}}", text)
-
-    # {{genre}} {{pron}} -> {{pron}} {{genre}}
-    word, gender = '', ''
-    genders = '(?P<gender>(n|c|f|m|mf|mf \?|msing|fsing|mplur|fplur|p|sp))'
-    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{" + genders + "}} {{pron\|\|sv}}",
-                  "'''\g<word>''' {{pron||sv}} {{\g<gender>}}",
-                  text,
-    )
-
-    # Add missing pronounciation template on the page
-    text = re.sub(r"'''(?P<word>[a-z-äöå]+)''' {{" + genders + "}}",
-                  "'''\g<word>''' {{pron||sv}} {{\g<gender>}}",
-                  text,
-    )
-
-    return text
-
-def create_inflection(inflection, case, title):
-    #TODO: add template 'voir' if necessary
-    inflection.text = """== {{langue|sv}} ==
-=== {{S|nom|sv|flexion}} ===
-{{sv-nom-c-or|mot=%s}}
-'''{{subst:PAGENAME}}''' {{pron||sv}}
-# ''%s de'' {{lien|%s|sv}}.""" % (title, case, title)
-    #inflection.save(summary="forme conjuguée")
-
-def get_inflections(site, page):
-    title = page.title()
-    root = title[:-1]
-    infl = {
-        'Singulier défini': 'an',
-        'Pluriel indéfini': 'or',
-        'Pluriel défini': 'orna'
+def parsing(text, lang='sv', section=''):
+    #TODO: does not support subsections present several times
+    regex = {
+        0 : r'=* *{{langue\|' + lang + '}}',
+        1 : r'\n== *{{langue\|(?!' + lang + r'}).*} *=',
+        2 : r'=* *{{S\|' + section + r'(\||})',
+        3 : r'\n=* *{{S\|(?!' + section + r').*}} *='
     }
-    for key, value in infl.items():
-        inflection = pywikibot.Page(site, root + value)
-        if not inflection.exists():
-            if not page in list(inflection.getReferences()):
-                pywikibot.output(f"Problème de déclinaisons sur la page {title}")
-                continue
-            create_inflection(inflection, key, title)
-            continue
-        pywikibot.output(f"Page {root+value} already exists.")
-        with open('page_to_create.txt', 'a') as f:
-            f.write(f"{title}, {root+value}\n")
-
-def replace_etymology(title, text):
-    # replace {{cf}} by {{compos}}
-    word1, word2 = '', ''
-    text = re.sub(r"{{cf\|(?P<word1>[a-z-äöå]+)\|(?P<word2>[a-z-äöå]+)\|lang=sv}}",
-                  "{{compos|m=1|\g<word1>|\g<word2>|lang=sv}}",
-                  text,
-    )
-    return text
-
-def get_section(text, lang='sv', **kwargs):
     begin, end = 0, len(text)
-    if not kwargs:
-        s = re.search(r'=* *{{langue\|' + lang + '}}', text)
-    else:
-        s = re.search(r'=* *{{S\|' + kwargs['section'] + r'(\||})', text)
-    if not s:
-        return None, begin, end
+    begin_, end_ = 0, 0
+    # Isolate language
+    for i in range(2):
+        s = re.search(regex[2*i], text)
+        if not s:
+            return '', begin, end, begin_, end_
+        begin = s.start()
+        text = text[begin:]
+        m = re.search(regex[(2*i)+1], text)
+        if m:
+            end = m.start()
+            text = text[:end]
+        if not section:
+            return text, begin, end, begin_, end_
+        if not i:
+            begin_, end_ = begin, end
+    return text, begin_, end_, begin, end
 
-    begin = s.start()
-    text = text[s.start():]
-    if not kwargs:
-        s = re.search(r'\n== *{{langue\|(?!' + lang + r'}).*} *=', text)
-    else:
-        s = re.search(r'\n=* *{{S\|(?!' + kwargs['section'] + r').*}} *=', text)
-    if s:
-        end = s.start()
-        text = text[:s.start()]
-    return text, begin, end
+def form_sortkey(title):
+    keys = {'å': 'z⿕', 'ä': 'z⿕⿕', 'ö': 'z⿕⿕⿕'}
+    for x, y in keys.items():
+        title = title.replace(x, y)
+    return title
+
+def old_sortkey(sortkey):
+    return sortkey.replace('⿕', '€')
+
+@parser
+def sortkey(page, text, lang='sv', section=''):
+    supported_lang = ('sv')
+    cases = {'adverbe', 'adjectif', 'nom', 'verbe'}
+
+    # Checks if a sortkey is needed, only swedish supported for now
+    title = page.title()
+    if not any(x in 'åäö' for x in title):
+        return text
+
+    pattern = re.compile(
+        '^=== {\{S\|(?P<type>\w+)\|(?P<lang>\w+)(\||)(?P<prm>.+) ===$',
+        re.MULTILINE
+    )
+    title = form_sortkey(title)
+
+    for m in re.finditer(pattern, text):
+        if not m.group('lang') == lang or not m.group('lang') in supported_lang:
+            continue
+        if old_sortkey(title) in m.group('prm'):
+            text = text.replace(old_sortkey(title), title)
+        if 'clé=' in m.group('prm'):
+            continue
+        if not m.group('type') in cases:
+            continue
+        x = m.group(0)
+        text = text.replace(x, x[:-6] + f'|clé={title}' + x[-6:])
+    return text
 
 
 class MyBot(CurrentPageBot):
@@ -126,23 +115,12 @@ class MyBot(CurrentPageBot):
         if not text:
             return
 
-        # Filters special pages and words not ending by letter "a"
-        if not title.endswith('a') or ':' in title:
-            return
-
-        # Analyze and modify (or not) the wikitext
-        pywikibot.output(f"Current page : {title}")
-        text = modify_wikitext(replace_templates, title, text)
-        text = modify_wikitext(replace_etymology, title, text, **{'section': 'étymologie'})
-
-        if '{{sv-nom-c-or}}' in text:
-            get_inflections(self.site, page)
+        text = sortkey(page, text)
 
         page.text = text
-
         if not page.text == page.get():
-            page.save(summary=self.summary)
             pywikibot.showDiff(page.get(), page.text)
+            page.save(summary=self.summary)
 
     def load(self, page):
         """
@@ -163,12 +141,11 @@ class MyBot(CurrentPageBot):
 
 
 if __name__ == '__main__':
-    #TODO: Detecter les verbes à particule
-    summary = 'mise en forme'
+
+    summary = '/* {{langue|sv}} */ clé de tri'
     site = pywikibot.Site('fr', fam='wiktionary')
-    #page = pywikibot.Page(site, 'Modèle:sv-nom-c-or')
-    #gen = page.getReferences()
-    cat = pywikibot.Category(site, 'Catégorie:suédois')
-    gen = pagegenerators.CategorizedPageGenerator(cat)
+
+    cat = pywikibot.Category(site, 'Catégorie:Verbes en suédois')
+    gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0, total=100, start="assurera")
     bot = MyBot(site, gen, summary)
     bot.run()
