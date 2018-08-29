@@ -1,0 +1,59 @@
+{{voir/nagot}}
+
+== {{langue|sv}} ==
+=== {{S|étymologie}} ===
+: ''Forme neutre de'' [[någon#sv|någon]].
+
+=== {{S|pronom|sv}} ===
+'''något'''
+
+# [[quelque chose|Quelque chose]]
+#* ''Vi måste göra '''något'''.''
+#*: Nous devons faire '''quelque chose'''.
+#* '''''Något''' blev fel.''
+#*: '''Quelque chose''' n'allait pas.
+
+==== {{S|synonymes}} ====
+* [[någonting#sv|någonting]]
+
+==== {{S|antonymes}} ====
+* [[inget#sv|inget]]
+
+=== {{S|adverbe2|sv}} ===
+'''något''' {{pron||sv}}
+# [[un peu|Un peu]], [[légèrement]].
+#* ''Han har det '''något''' bättre.''
+#*: Il va un peu mieux.
+#* ''Jag känner mig '''något''' bättre.''
+#*: Je me sens légèrement mieux.
+#* ''Hans anseende har minskats '''något'''.''
+#*: Sa réputation a légèrement diminué.
+#* '''''Något''' efter kl. 8.''
+#*: Un peu après 8 heures.
+#* '''''Något''' pengar.''
+#*: Un peu d’argent.
+
+==== {{S|synonymes}} ====
+{{(}}
+* [[måttligt]]
+* [[lite]] / [[litet]]
+* [[lite grann]]
+* [[en aning]]
+* [[ringa]]
+* [[svagt]]
+* [[någorlunda]]
+* [[lätt]]
+{{)}}
+
+==== {{S|antonymes}} ====
+{{(}}
+* [[fullständigt]]
+* [[helt och hållet]]
+* [[till fullo]]
+{{)}}
+
+=== {{S|prononciation}} ===
+* {{écouter|lang=sv||audio=Sv-något.ogg}}
+
+
+{{clé de tri|nagot}}

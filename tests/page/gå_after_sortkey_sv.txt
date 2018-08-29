@@ -1,0 +1,126 @@
+{{voir/ga}}
+
+== {{langue|da}} ==
+=== {{S|étymologie}} ===
+: Du {{étyl|non|da|mot=gá|sens=[[aller]]}}.
+
+=== {{S|verbe|da}} ===
+'''gå''' {{pron|ɡo̜ːˀ|da}}
+# [[aller|Aller]], [[marcher]].
+#* ''At '''gå''' i parken ær dejligt om sommeren.''
+#*: Aller au parc est agréable en été.
+#* '''''Går''' du til skolen eller tar du bussen?‎''
+#*: Tu marches vers l’école, ou tu prends le bus ?
+#* ''Hvordan '''går''' det?''
+#*: Comment ça va' ?
+#* ''Det '''går''' fint, tak.''
+#*: Merci, ça va bien.
+# [[partir|Partir]].
+#* ''Næste gang skal vi '''gå''' til Amsterdam.''
+#*: La prochaine fois, nous irons à Amsterdam.
+# [[mener#fr|Mener]].
+#* ''Togsporet '''går''' mellem København og Hirtshals.''
+#*: La voie ferrée mène de Copenhague à Hirtshals.
+#* ''Stien '''går''' herfra og ned til floden.
+#*: Le chemin mène d’ici à en bas, à la rivière.
+# [[fonctionner#fr|Fonctionner]].
+#* ''Dette ur '''går''' helt rigtig.''
+#*: Cette horloge fonctionne parfaitement bien.
+
+==== {{S|composés}} ====
+{{(}}
+* {{lien|afgå|da}}
+* {{lien|angå|da}}
+* {{lien|begå|da}}
+* {{lien|fremgå|da}}
+* {{lien|gå til|da}}
+* {{lien|foregå|da}}
+* {{lien|forgå|da}}
+* {{lien|gå ud|da}}
+* {{lien|indgå|da}}
+* {{lien|overgå|da}}
+* {{lien|pågå|da}}
+* {{lien|tilgå|da}}
+* {{lien|udgå|da}}
+* {{lien|undergå|da}}
+* {{lien|undgå|da}}
+{{)}}
+
+== {{langue|no}} ==
+{{ébauche|no}}
+
+=== {{S|étymologie}} ===
+: {{ébauche-étym|no}}
+
+=== {{S|verbe|no}} ===
+{{no-conj-rég|å gå|går|gikk|gått|gånde|gå|gås}}
+'''gå''' {{pron|lang=no}}
+# [[aller|Aller]],[[partir|Partir]].
+
+=== {{S|prononciation}} ===
+* {{écouter|||lang=no|audio=No-gå.ogg}}
+
+
+{{créer séparément}}
+
+=== {{S|verbe|no}} ===
+'''Å gå + seg + bort'''
+# Se [[perdre]].
+'''Å gå + sin vei'''
+# S’[[en]] [[aller]].
+
+{{clé de tri|ga}}
+
+== {{langue|sv}} ==
+=== {{S|étymologie}} ===
+: {{ébauche-étym|sv}}
+
+=== {{S|verbe|sv|clé=gz⿕}} ===
+'''gå''' {{pron||sv}}
+{{sv-conj-ar|3=gick|4=gått|5=gående|6=gången}}
+# [[aller#fr|Aller]], [[partir#fr|partir]].
+#* ''Att '''gå''' i parken är trevligt om sommaren.''
+#*: '''Aller''' au parc est agréable en été.
+#* ''Härnäst skall vi '''gå''' till Amsterdam.''
+#*: La prochaine fois, nous '''irons''' à Amsterdam.
+# [[mener#fr|Mener]].
+#* ''Järnvägen '''går''' mellan Stockholm och Göteborg.''
+#*: La voie ferrée ''(mène)'' entre Stockholm et Göteborg.
+#* ''Stigen '''går''' härifrån ned till floden.
+#*: Le chemin '''mène''' d’ici à en bas, à la rivière.
+# [[fonctionner#fr|Fonctionner]].
+#* ''Den här klockan '''går''' helt rätt.''
+#*: Cette horloge '''fonctionne''' parfaitement bien.
+# [[aller#fr|Aller]], [[se passer#fr|se passer]].
+#* ''Det '''går''' inte att öppna dörren.''
+#*: Ce n'est pas '''possible''' d'ouvrir la porte.
+# {{familier|sv}} [[pouvoir#fr|Pouvoir]], avoir la permission.
+#* ''Mamma, '''går''' det att jag kommer hem senare idag ?
+#*: Maman, '''puis'''-je rentrer plus tard aujourd'hui ?
+
+==== {{S|dérivés}} ====
+{{(}}
+* [[angå#sv|angå]]
+* [[avgå#sv|avgå]]
+* [[begå#sv|begå]]
+* [[framgå#sv|framgå]]
+* [[frångå#sv|frångå]]
+* [[föregå#sv|föregå]]
+* [[förgå#sv|förgå]]
+* [[gång#sv|gång]]
+* [[ingå#sv|ingå]]
+* [[kringgå#sv|kringgå]]
+* [[pågå#sv|pågå]]
+* [[tillgå#sv|tillgå]]
+* [[undergå#sv|undergå]]
+* [[undgå#sv|undgå]]
+* [[utgå#sv|utgå]]
+* [[övergå#sv|övergå]]
+{{)}}
+
+=== {{S|verbe|sv|flexion|clé=gz⿕}} ===
+'''gå''' {{pron||sv}}
+# ''Impératif de'' [[gåa]].
+
+=== {{S|prononciation}} ===
+* {{écouter|lang=sv||audio=Sv-gå.ogg}}

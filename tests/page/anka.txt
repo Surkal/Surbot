@@ -1,0 +1,21 @@
+{{voir|änka|Anka}}
+
+== {{langue|sv}} ==
+=== {{S|étymologie}} ===
+: {{cf|hello|world|lang=sv}}.
+
+=== {{S|nom|sv|num=1}} ===
+{{sv-nom|ankan|ankor|ankorna}}
+'''anka''' {{c}}
+# [[canard|Canard]].
+
+==== {{S|synonymes}} ====
+* [[and]]
+
+=== {{S|nom|sv|num=2}} ===
+{{sv-nom|ankan|ankor|ankorna}}
+'''anka''' {{c}} {{pron||sv}}
+# [[canard|Canard]].
+
+=== {{S|prononciation}} ===
+* {{écouter|lang=sv||audio=Sv-en anka.ogg}}

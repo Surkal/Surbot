@@ -1,0 +1,114 @@
+{{voir|Manifest}}
+
+== {{langue|en}} ==
+=== {{S|étymologie}} ===
+: Du {{étyl|frm|en|mot=manifeste}}, issu du {{étyl|la|en}} ''[[manifestus#la|manifestus]]'', ''[[manufestus#la|manufestus]]'' (« [[palpable]] manifeste »), composé de ''[[manus#la|manus]]'' (« [[main]] ») et de {{recons|festus}}, participe de {{recons|fendere}} (« [[frapper]] ») (présent aussi dans [[defendere#la|defendere]], [[offendere#la|offendere]], ...).
+
+=== {{S|adjectif|en}} ===
+{{en-adj-long}}
+'''manifest'''
+# [[manifeste|Manifeste]].
+
+==== {{S|quasi-synonymes}} ====
+* {{lien|clear|en|sens=évident}}
+* {{lien|evident|en|sens=évident}}
+* {{lien|obvious|en|sens=évident}}
+* {{lien|patent|en|sens=patent}}
+
+==== {{S|dérivés}} ====
+* {{lien|manifestation|en|sens=signe, epression}}
+* [[manifest content]]
+* [[manifest destiny]]
+
+==== {{S|vocabulaire}} ====
+* {{lien|apparent|en|sens=apparent}}
+* {{lien|distinct|en|sens=distinct}}
+* {{lien|palpable|en|sens=palpable}}
+* {{lien|plain|en|sens=ordinaire, simple}}
+
+=== {{S|nom|en}} ===
+{{en-nom-rég}}
+'''manifest'''
+# [[manifeste|Manifeste]] ''(liste des marchandises que transporte un navire destinée à être présentée à la douane)''.
+
+=== {{S|verbe|en}} ===
+{{en-conj-rég}}
+'''manifest'''
+# [[manifester|Manifester]].
+# [[proclamer|Proclamer]].
+# [[désigner|Désigner]], [[indiquer]], [[montrer]].
+
+==== {{S|synonymes}} ====
+{{(|désigner, indiquer, montrer}}
+* [[connote]]
+* [[denote]]
+* [[demonstrate]]
+* [[display]]
+* [[indicate]]
+* [[point out]]
+* [[show]]
+* [[suggest]]
+{{)}}
+
+==== {{S|apparentés}} ====
+* [[manifestation]]
+* [[manifestly]]
+* [[manifesto]]
+
+=== {{S|prononciation}} ===
+* {{UK|nocat=1}}, {{US|nocat=1}} : {{pron|ˈmæn.ɪ.fɛst|en}}, {{pron|ˈmæn.ə.fɛst|en}}
+* {{écouter|lang=en|États-Unis <!-- précisez svp la ville ou la région -->|ˈmæ.nə.ˌfɛst|audio=En-us-manifest.ogg}}
+
+=== {{S|voir aussi}} ===
+* {{WP|Manifest_(transportation)|manifest (liste des marchandises que transporte un navire)|en}}
+* {{WP|Manifest|manifest (tous les sens)|en}}
+
+=== {{S|références}} ===
+* {{Source-wikt|en|manifest|10868763}}
+
+== {{langue|ca}} ==
+=== {{S|étymologie}} ===
+: Du latin ''[[manifestus]]''.
+
+=== {{S|adjectif|ca}} ===
+'''manifest''' ({{f}} : '''[[manifesta]]''')
+# [[manifeste|Manifeste]].
+
+=== {{S|nom|ca}} ===
+'''manifest''' {{m}}
+# [[manifeste|Manifeste]] (politique ou artistique).
+
+== {{langue|sv}} ==
+=== {{S|étymologie}} ===
+: {{ébauche-étym|sv}}
+
+=== {{S|adjectif|sv}} ===
+{{sv-adj|noncomp=|neutre=manifest|masc=}}
+'''manifest''' {{pron||sv}}
+# {{lien|manifeste|fr|dif=Manifeste}}.
+
+=== {{S|nom|sv}} ===
+{{sv-nom-n-0}}
+'''manifest''' {{pron||sv}} {{n}}
+# {{lien|manifeste|fr|dif=Manifeste}}.
+
+==== {{S|dérivés}} ====
+* {{lien|manifestera|sv}}
+* {{lien|manifestation|sv}}
+
+=== {{S|références}} ===
+* {{R:Hammar|499}}
+
+== {{langue|cs}} ==
+=== {{S|étymologie}} ===
+: Du {{étyl|la|cs|manifestus}}.
+
+=== {{S|nom|cs}} ===
+{{cs-décl-nom-mi-dur}}
+'''manifest''' {{pron||cs}} {{m|i}}
+# [[manifeste#fr|Manifeste]].
+#*''veřejný '''manifest'''.''
+
+==== {{S|apparentés}} ====
+* [[manifestace]]
+* [[manifestovat]]
