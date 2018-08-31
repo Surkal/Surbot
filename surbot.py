@@ -5,6 +5,7 @@ import pywikibot
 from pywikibot.bot import CurrentPageBot
 from pywikibot import pagegenerators
 
+
 def parser(func):
     """
     Decorator that :
@@ -15,7 +16,7 @@ def parser(func):
     Ideally, this decorator should be called for each function that
     modifies the wikitext.
     """
-    def wrapper(page, text, lang='sv', section=''):
+    def wrapper(page, text, lang='', section=''):
         # extract from the page the part we need
         t, beg, end, beg_, end_ = parsing(text, lang, section)
         if not t:
@@ -24,13 +25,13 @@ def parser(func):
         # working part
         t = func(page, t, lang, section)
 
-        # reformation of the page
+        # reformation of the text
         if not section:
             return text[:beg] + t + text[beg+end:]
         return text[:beg+beg_] + t + text[beg+beg_+end_:]
     return wrapper
 
-def parsing(text, lang='sv', section=''):
+def parsing(text, lang='', section=''):
     #TODO: does not support subsections present several times
     regex = {
         0 : r'=* *{{langue\|' + lang + '}}',
@@ -63,13 +64,32 @@ def form_sortkey(title):
         title = title.replace(x, y)
     return title
 
-def old_sortkey(sortkey):
-    return sortkey.replace('⿕', '€')
+def old_sortkey(title, lang, code):
+    for x, y in code[lang].items():
+        title = title.replace(x, y)
+    return title
 
 @parser
-def sortkey(page, text, lang='sv', section=''):
-    supported_lang = ('sv')
-    cases = {'adverbe', 'adjectif', 'nom', 'verbe'}
+def sortkey(page, text, lang='', section=''):
+    code = {
+        'da': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'nb': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'no': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'nn': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'sv': {'å': 'z€', 'ä': 'z€€', 'ö': 'z€€€'}
+    }
+    word_types = {
+        'adjectif', 'adjectif numéral', 'adjectif possessif', 'adverbe',
+        'article', 'article défini', 'article indéfini', 'article partitif',
+        'circonfixe', 'conjonction', 'infixe', 'interjection', 'nom',
+        'nom propre', 'particule', 'postposition', 'pronom', 'préfixe',
+        'prénom', 'préposition', 'suffixe', 'verbe'
+    }
+    langs = code.keys()
+
+    # Checks if the language is supprted
+    if not lang in langs:
+        return text
 
     # Checks if a sortkey is needed, only swedish supported for now
     title = page.title()
@@ -77,22 +97,21 @@ def sortkey(page, text, lang='sv', section=''):
         return text
 
     pattern = re.compile(
-        '^=== {\{S\|(?P<type>\w+)\|(?P<lang>\w+)(\||)(?P<prm>.+) ===$',
+        '^=== {\{S\|(%s)\|%s(\||)(?P<prm>.+) ===$' % ('|'.join(word_types), lang),
         re.MULTILINE
     )
     title = form_sortkey(title)
 
     for m in re.finditer(pattern, text):
-        if not m.group('lang') == lang or not m.group('lang') in supported_lang:
-            continue
-        if old_sortkey(title) in m.group('prm'):
-            text = text.replace(old_sortkey(title), title)
+        if old_sortkey(title, lang, code) in m.group('prm'):
+            text = text.replace(old_sortkey(title, lang, code), title)
         if 'clé=' in m.group('prm'):
             continue
-        if not m.group('type') in cases:
-            continue
         x = m.group(0)
-        text = text.replace(x, x[:-6] + f'|clé={title}' + x[-6:])
+        text = text.replace(
+            x,
+            x[:-6] + '|clé={{subst:clé par langue|%s}}' % (lang) + x[-6:]
+        )
     return text
 
 
@@ -146,6 +165,6 @@ if __name__ == '__main__':
     site = pywikibot.Site('fr', fam='wiktionary')
 
     cat = pywikibot.Category(site, 'Catégorie:Verbes en suédois')
-    gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0, total=100, start="assurera")
+    gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
     bot = MyBot(site, gen, summary)
     bot.run()
