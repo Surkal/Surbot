@@ -4,7 +4,7 @@
 === {{S|étymologie}} ===
 : Du {{étyl|non|da|mot=gá|sens=[[aller]]}}.
 
-=== {{S|verbe|da}} ===
+=== {{S|verbe|da|clé={{subst:clé par langue|da}}}} ===
 '''gå''' {{pron|ɡo̜ːˀ|da}}
 # [[aller|Aller]], [[marcher]].
 #* ''At '''gå''' i parken ær dejligt om sommeren.''
@@ -75,7 +75,7 @@
 === {{S|étymologie}} ===
 : {{ébauche-étym|sv}}
 
-=== {{S|verbe|sv|clé={{subst:clé par langue|sv}}}} ===
+=== {{S|verbe|sv}} ===
 '''gå''' {{pron||sv}}
 {{sv-conj-ar|3=gick|4=gått|5=gående|6=gången}}
 # [[aller#fr|Aller]], [[partir#fr|partir]].
@@ -118,7 +118,7 @@
 * [[övergå#sv|övergå]]
 {{)}}
 
-=== {{S|verbe|sv|flexion|clé={{subst:clé par langue|sv}}}} ===
+=== {{S|verbe|sv|flexion}} ===
 '''gå''' {{pron||sv}}
 # ''Impératif de'' [[gåa]].
 
