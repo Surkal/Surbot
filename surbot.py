@@ -1,9 +1,42 @@
 import re
 import sys
+from types import MethodType
 
 import pywikibot
 from pywikibot.bot import CurrentPageBot
 from pywikibot import pagegenerators
+
+
+class Parser:
+    """
+    Decorator that :
+    - isolates the part of the text being worked on
+    - calls the function
+    - then returns the complete text with the changes made
+
+    Ideally, this decorator should be called for each function that
+    modifies the wikitext.
+    """
+    def __init__(self, func):
+        self.func = func
+
+    def __call__(self, page, text, lang='', section=''):
+        # extract from the page the part we need
+        t, beg, end, beg_, end_ = parsing(text, lang, section)
+        if not t:
+            return text
+
+        # working part
+        t = self.func(page, t, lang, section)
+
+        # reformation of the text
+        if not section:
+            return text[:beg] + t + text[beg+end:]
+        return text[:beg+beg_] + t + text[beg+beg_+end_:]
+
+    def __get__(self, instance, cls):
+        # Return a Method if it is called on an instance
+        return self if instance is None else MethodType(self, instance)
 
 
 def parser(func):
@@ -16,6 +49,7 @@ def parser(func):
     Ideally, this decorator should be called for each function that
     modifies the wikitext.
     """
+    @wraps(func)
     def wrapper(page, text, lang='', section=''):
         # extract from the page the part we need
         t, beg, end, beg_, end_ = parsing(text, lang, section)
@@ -58,18 +92,26 @@ def parsing(text, lang='', section=''):
             begin_, end_ = begin, end
     return text, begin_, end_, begin, end
 
-def form_sortkey(title):
-    keys = {'å': 'z⿕', 'ä': 'z⿕⿕', 'ö': 'z⿕⿕⿕'}
-    for x, y in keys.items():
+def form_sortkey(title, lang):
+    code = {
+        'da': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
+        'nb': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
+        'no': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
+        'nn': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
+        'sv': {'å': 'z⿕', 'ä': 'z⿕⿕', 'ö': 'z⿕⿕⿕'}
+    }
+    for x, y in code[lang].items():
         title = title.replace(x, y)
+        title = title.replace(x.upper(), y.upper())
     return title
 
 def old_sortkey(title, lang, code):
     for x, y in code[lang].items():
         title = title.replace(x, y)
+        title = title.replace(x.upper(), y.upper())
     return title
 
-@parser
+@Parser
 def sortkey(page, text, lang='', section=''):
     code = {
         'da': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
@@ -87,24 +129,24 @@ def sortkey(page, text, lang='', section=''):
     }
     langs = code.keys()
 
-    # Checks if the language is supprted
+    # Whether the language is supported
     if not lang in langs:
         return text
 
-    # Checks if a sortkey is needed, only swedish supported for now
+    # Whether a sortkey is needed
     title = page.title()
-    if not any(x in 'åäö' for x in title):
+    if not any(x in 'ÅÄÖØÆåäöøæ' for x in title):
         return text
 
     pattern = re.compile(
         '^=== {\{S\|(%s)\|%s(\||)(?P<prm>.+) ===$' % ('|'.join(word_types), lang),
         re.MULTILINE
     )
-    title = form_sortkey(title)
-
+    old = old_sortkey(title, lang, code)
+    title = form_sortkey(title, lang)
     for m in re.finditer(pattern, text):
-        if old_sortkey(title, lang, code) in m.group('prm'):
-            text = text.replace(old_sortkey(title, lang, code), title)
+        if old in m.group('prm'):
+            text = text.replace(old, title)
         if 'clé=' in m.group('prm'):
             continue
         x = m.group(0)
@@ -134,7 +176,9 @@ class MyBot(CurrentPageBot):
         if not text:
             return
 
-        text = sortkey(page, text)
+        pywikibot.output(title)
+        for lang in ('da', 'no', 'nb', 'nn', 'fi', 'sv'):
+            text = sortkey(page, text, lang=lang)
 
         page.text = text
         if not page.text == page.get():
@@ -161,10 +205,11 @@ class MyBot(CurrentPageBot):
 
 if __name__ == '__main__':
 
-    summary = '/* {{langue|sv}} */ clé de tri'
+    summary = 'ajout clé de tri'
     site = pywikibot.Site('fr', fam='wiktionary')
 
-    cat = pywikibot.Category(site, 'Catégorie:Verbes en suédois')
+    cat = pywikibot.Category(site, 'Catégorie:danois')
     gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
+
     bot = MyBot(site, gen, summary)
     bot.run()

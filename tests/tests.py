@@ -3,7 +3,7 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from .utils import extract_text
-from surbot import parsing, sortkey, form_sortkey, parser, SortKey
+from surbot import parsing, sortkey, form_sortkey, parser
 
 
 class TestParsing(TestCase):
