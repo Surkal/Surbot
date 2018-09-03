@@ -6,3 +6,4 @@ ipython
 requests_html
 ebooklib
 coverage
+pytest
