@@ -1,6 +1,7 @@
 import re
 import sys
 from types import MethodType
+from datetime import datetime, timedelta
 
 import pywikibot
 from pywikibot import pagegenerators
@@ -10,19 +11,19 @@ from sortkey import sortkey
 
 
 class MyBot(CurrentPageBot):
-    def __init__(self, site, generator, summary, langs=None):
+    def __init__(self, site, generator, summary, langs=('sv')):
         self.site = site
         self.summary = summary
         self.generator = generator
-        self.supported = set(langs) or set(('sv'))
+        self.supported = set(langs)
 
-    def list_langs(text):
+    def list_langs(self, text):
         """Returns a set of all languages on the page"""
         return set(re.findall(r"{{langue\|(?P<lang>\w+)}\}", text))
 
     def langs(self, text):
-        text_langs = list_langs(text)
-        return self.supported - text_langs
+        text_langs = self.list_langs(text)
+        return self.supported.intersection(text_langs)
 
     def run(self):
         for page in self.generator:
@@ -39,7 +40,8 @@ class MyBot(CurrentPageBot):
 
         pywikibot.output(title)
 
-        for lang in langs(text):
+        # Fix a sortkey
+        for lang in self.langs(text):
             text = sortkey(page, text, lang=lang)
 
         page.text = text
@@ -73,5 +75,9 @@ if __name__ == '__main__':
     cat = pywikibot.Category(site, 'Catégorie:suédois')
     gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
 
-    bot = MyBot(site, gen, summary)
+    # recent changes, last 48 hours
+    end = datetime.now() - timedelta(hours=48)
+    gen = pagegenerators.RecentChangesPageGenerator(site=site, namespaces=0,
+                                                    showBot=False, end=end)
+    bot = MyBot(site, gen, summary, langs=('sv', 'no', 'da', 'nn', 'nb', 'fi'))
     bot.run()
