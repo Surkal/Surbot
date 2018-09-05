@@ -5,7 +5,7 @@ from unittest.mock import MagicMock
 import pytest
 
 from decorator import parsing
-from .utils import extract_text
+from .utils_test import extract_text
 from surbot import sortkey
 from sortkey import form_sortkey
 

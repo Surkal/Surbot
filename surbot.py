@@ -8,6 +8,7 @@ from pywikibot import pagegenerators
 from pywikibot.bot import CurrentPageBot
 
 from sortkey import sortkey
+from utils import page_languages
 
 
 class MyBot(CurrentPageBot):
@@ -17,12 +18,8 @@ class MyBot(CurrentPageBot):
         self.generator = generator
         self.supported = set(langs)
 
-    def list_langs(self, text):
-        """Returns a set of all languages on the page"""
-        return set(re.findall(r"{{langue\|(?P<lang>\w+)}\}", text))
-
     def langs(self, text):
-        text_langs = self.list_langs(text)
+        text_langs = page_languages(text, typ='set')
         return self.supported.intersection(text_langs)
 
     def run(self):
