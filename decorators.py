@@ -68,9 +68,10 @@ class Parser:
 
 
 class Insert:
+    filename = '/src/languages.json'
+
     def __init__(self, func):
         self.func = func
-        self.filename = '/src/languages.json'
 
     def __call__(self, text, lang=''):
         self.extract_languages()
@@ -105,7 +106,7 @@ class Insert:
             return text[:m] + t + '\n\n' + text[m:]
         m = len(text)
         return text[:m] + '\n' + t + text[m:]
-
+    
     def extract_languages(self, force_scrape=False):
         """
         Scrape the list of languages present on the wiktionnaire from :
