@@ -2,8 +2,7 @@ from unittest import TestCase
 
 import pytest
 
-from .utils_test import extract_text
-from utils import page_languages
+from utils import page_languages, extract_text
 
 
 class TestLangList(TestCase):
@@ -18,6 +17,10 @@ class TestLangList(TestCase):
     def test_no_type(self):
         assert page_languages(self.text, 'toto') == None
         assert page_languages(self.text, typ='toto') == None
+
+    def test_correct_return_type(self):
+        assert isinstance(page_languages(self.text, 'set'), set)
+        assert isinstance(page_languages(self.text, 'list'), list)
 
     def test_success(self):
         assert page_languages(self.text, 'set') == set({'da', 'no', 'sv'})

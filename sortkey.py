@@ -1,22 +1,16 @@
 import re
 
-from decorator import Parser
+from decorators import Parser
 
 
-def form_sortkey(title, lang):
+def old_sortkey(title, lang):
     code = {
-        'da': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
-        'nb': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
-        'no': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
-        'nn': {'æ': 'z⿕', 'ø': 'z⿕⿕', 'å': 'z⿕⿕⿕'},
-        'sv': {'å': 'z⿕', 'ä': 'z⿕⿕', 'ö': 'z⿕⿕⿕'}
+        'da': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'nb': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'no': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'nn': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
+        'sv': {'å': 'z€', 'ä': 'z€€', 'ö': 'z€€€'}
     }
-    for x, y in code[lang].items():
-        title = title.replace(x, y)
-        title = title.replace(x.upper(), y.upper())
-    return title
-
-def old_sortkey(title, lang, code):
     for x, y in code[lang].items():
         title = title.replace(x, y)
         title = title.replace(x.upper(), y.upper())
@@ -54,8 +48,7 @@ def sortkey(page, text, lang='', section=''):
         '^=== {\{S\|(%s)\|%s(\||)(?P<prm>.+) ===$' % ('|'.join(word_types), lang),
         re.MULTILINE
     )
-    old = old_sortkey(title, lang, code)
-    title = form_sortkey(title, lang)
+    old = old_sortkey(title, lang)
     for m in re.finditer(pattern, text):
         if old in m.group('prm'):
             text = text.replace(old, '{{subst:clé par langue|%s}}' % (lang))

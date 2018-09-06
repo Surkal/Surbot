@@ -10,3 +10,7 @@ def page_languages(text, typ):
     if typ == 'set':
         return set(re.findall(r"{{langue\|(?P<lang>\w+)}\}", text))
     return list(re.findall(r"{{langue\|(?P<lang>\w+)}\}", text))
+
+def extract_text(filename):
+    with open(filename, 'r') as f:
+        return f.read()
