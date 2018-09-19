@@ -3,7 +3,7 @@ __pycache__/*
 pywikibot*
 apicache*
 *.ctrl
-user-*
+user-p*
 books/*
 htmlcov/*
 frwikt/*
