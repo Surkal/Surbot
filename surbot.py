@@ -19,7 +19,7 @@ class MyBot(CurrentPageBot):
         self.supported = set(langs)
 
     def langs(self, text):
-        text_langs = page_languages(text, typ='set')
+        text_langs = page_languages(text, set)
         return self.supported.intersection(text_langs)
 
     def run(self):
@@ -73,7 +73,7 @@ if __name__ == '__main__':
     gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
 
     # recent changes, last 48 hours
-    end = datetime.now() - timedelta(hours=48)
+    end = datetime.now() - timedelta(hours=24)
     gen = pagegenerators.RecentChangesPageGenerator(site=site, namespaces=0,
                                                     showBot=False, end=end)
     bot = MyBot(site, gen, summary, langs=('sv', 'no', 'da', 'nn', 'nb', 'fi'))

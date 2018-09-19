@@ -1,6 +1,6 @@
 import re
 
-from decorators import Parser
+from decorators import parser
 
 
 def old_sortkey(title, lang):
@@ -16,8 +16,8 @@ def old_sortkey(title, lang):
         title = title.replace(x.upper(), y.upper())
     return title
 
-@Parser
-def sortkey(page, text, lang='', section=''):
+@parser
+def sortkey(page, text, lang, section=''):
     code = {
         'da': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},
         'nb': {'æ': 'z€', 'ø': 'z€€', 'å': 'z€€€'},

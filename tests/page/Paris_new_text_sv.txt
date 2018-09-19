@@ -1,0 +1,14 @@
+== {{langue|sv}} ==
+=== {{S|étymologie}} ===
+: {{date|lang=sv}} Du français ''[[Paris#fr|Paris]]''.
+
+=== {{S|nom propre|sv}} ===
+'''Paris''' {{pron||sv}}
+# {{localités|sv|de France}} [[Paris#fr|Paris]] (ville de [[France]]).
+
+=== {{S|voir aussi}} ===
+* {{WP|lang=sv}}
+* {{WQ|lang=sv}}
+* {{VOY|lang=sv}}
+
+[[Catégorie:Capitales en suédois]]
