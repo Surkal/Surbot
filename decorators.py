@@ -23,7 +23,7 @@ class Parser:
     def __init__(self, func):
         self.func = func
 
-    def __call__(self, page, text, lang, **kwargs):
+    def __call__(self, f, page, text, lang, **kwargs):
         section, new_text = '', ''
         try:
             if kwargs:
@@ -36,7 +36,6 @@ class Parser:
         if not t:
             return text
         # working part
-        #t = self.func(*(page, t, lang, kwargs['section']))
         t = self.func(page, t, lang, **kwargs)
 
         # reformation of the text
@@ -53,7 +52,6 @@ class Parser:
         return bound_decorated
 
     def parsing(self, text, lang, section=''):
-        #import ipdb; ipdb.set_trace()
         #TODO: does not support subsections present several times
         regex = {
             0 : r'=* *{{langue\|' + lang + '}}',

@@ -39,7 +39,7 @@ class MyBot(CurrentPageBot):
 
         # Fix a sortkey
         for lang in self.langs(text):
-            text = sortkey(page, text, lang=lang)
+            text = sortkey(None, page, text, lang=lang)
 
         page.text = text
         if not page.text == page.get():
