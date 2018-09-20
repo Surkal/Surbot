@@ -1,5 +1,6 @@
 import re
 import sys
+import argparse
 from types import MethodType
 from datetime import datetime, timedelta
 
@@ -64,17 +65,64 @@ class MyBot(CurrentPageBot):
         return None
 
 
-if __name__ == '__main__':
+def main(*args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "-simulate",
+        help="option for test purposes",
+        default=False,
+        action="store_true"
+    )
+    parser.add_argument(
+        "-site",
+        help="Site on which the bot is working",
+        default='fr',
+        type=str
+    )
+    parser.add_argument(
+        "-summary",
+        help="Summary",
+        default="Mise en forme",
+        type=str
+    )
+    parser.add_argument(
+        "-r",
+        help="goes through the pages modified by humans in the last 24 hours",
+        default=24,
+        action="store_true"
+    )
+    parser.add_argument(
+        "--recent",
+        help="goes through the pages modified by humans in the last X hours",
+        default=0,
+        type=float
+    )
+    parser.add_argument(
+        "-cat",
+        help="Category to crawl",
+        type=str
+    )
+    args = parser.parse_args()
 
-    summary = 'ajout clé de tri'
-    site = pywikibot.Site('fr', fam='wiktionary')
+    pywikibot.config.simulate = args.simulate
 
-    cat = pywikibot.Category(site, 'Catégorie:suédois')
-    gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
+    summary = args.summary
+    site = pywikibot.Site(args.site, fam='wiktionary')
 
-    # recent changes, last 48 hours
-    end = datetime.now() - timedelta(hours=24)
-    gen = pagegenerators.RecentChangesPageGenerator(site=site, namespaces=0,
-                                                    showBot=False, end=end)
+    if args.r or args.recent:
+        t = args.recent or args.r
+        end = datetime.now() - timedelta(hours=t)
+        gen = pagegenerators.RecentChangesPageGenerator(site=site, namespaces=0,
+                                                        showBot=False, end=end,
+                                                        topOnly=True)
+
+    if args.cat:
+        cat = pywikibot.Category(site, f'Catégorie:{args.cat}')
+        gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
+
     bot = MyBot(site, gen, summary, langs=('sv', 'no', 'da', 'nn', 'nb', 'fi'))
     bot.run()
+
+if __name__ == '__main__':
+
+    main(sys.argv)
