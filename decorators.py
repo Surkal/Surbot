@@ -91,7 +91,7 @@ class Insert:
         self.func = func
         self.data = self.all_languages()
 
-    def __call__(self, page, text, lang):
+    def __call__(self, page, text, lang, *args, **kwargs):
         page_langs = page_languages(text, list)
 
         # Whether the language is already present
@@ -114,13 +114,15 @@ class Insert:
             if m:
                 m = m.start()
 
-        t = self.func(page, text, lang)
+        t = self.func(page, text, lang, *args, **kwargs)
 
         # Reformation of the text
+        if not text:
+            return t
         if m:
             return text[:m] + t + '\n' + text[m:]
         m = len(text)
-        return text[:m] + '\n' + t + text[m:]
+        return text[:m] + '\n\n' + t + text[m:]
 
     def category_sorting(self, page, text, page_langs):
         #TODO: page_langs parameter can only be called from __call__

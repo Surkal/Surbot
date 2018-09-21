@@ -10,6 +10,7 @@ from pywikibot.bot import CurrentPageBot
 
 from sortkey import sortkey
 from utils import page_languages
+from inflection import Inflection
 
 
 class MyBot(CurrentPageBot):
@@ -38,9 +39,14 @@ class MyBot(CurrentPageBot):
 
         pywikibot.output(title)
 
+        #TODO: create a decorator to filter langs
         # Fix a sortkey
-        for lang in self.langs(text):
+        lang_list = self.langs(text)
+        for lang in lang_list:
             text = sortkey(None, page, text, lang=lang)
+        if 'sv' in lang_list:
+            Inflection.inflection(page, title, 'sv')
+
 
         page.text = text
         if not page.text == page.get():
@@ -98,9 +104,29 @@ def main(*args):
         type=float
     )
     parser.add_argument(
+        "-users",
+        default=None
+    )
+    parser.add_argument(
         "-cat",
         help="Category to crawl",
         type=str
+    )
+    parser.add_argument(
+        "-pages",
+        help="List of pages, separated by '/'",
+        type=str
+    )
+    parser.add_argument(
+        "-total",
+        help="Maximum number of pages",
+        type=int,
+        default=None
+    )
+    parser.add_argument(
+        '-start',
+        type=str,
+        default=None
     )
     args = parser.parse_args()
 
@@ -110,15 +136,24 @@ def main(*args):
     site = pywikibot.Site(args.site, fam='wiktionary')
 
     if args.r or args.recent:
-        t = args.recent or args.r
+        users = None
+        if args.users:
+            users = list(args.users.split(','))
+
+        t = args.recent or 24
         end = datetime.now() - timedelta(hours=t)
         gen = pagegenerators.RecentChangesPageGenerator(site=site, namespaces=0,
                                                         showBot=False, end=end,
-                                                        topOnly=True)
+                                                        topOnly=True, user=users)
 
     if args.cat:
         cat = pywikibot.Category(site, f'Catégorie:{args.cat}')
-        gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0)
+        gen = pagegenerators.CategorizedPageGenerator(cat, namespaces=0,
+                                                      total=args.total,
+                                                      start=args.start)
+
+    if args.pages:
+        gen = [pywikibot.Page(site, x) for x in args.pages.split('/')]
 
     bot = MyBot(site, gen, summary, langs=('sv', 'no', 'da', 'nn', 'nb', 'fi'))
     bot.run()
