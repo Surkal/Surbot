@@ -43,7 +43,7 @@ class MyBot(CurrentPageBot):
         # Fix a sortkey
         lang_list = self.langs(text)
         for lang in lang_list:
-            text = sortkey(None, page, text, lang=lang)
+            text = sortkey(page, text, lang)
         if 'sv' in lang_list:
             Inflection.inflection(page, title, 'sv')
 
@@ -51,7 +51,7 @@ class MyBot(CurrentPageBot):
         page.text = text
         if not page.text == page.get():
             pywikibot.showDiff(page.get(), page.text)
-            page.save(summary=self.summary)
+            page.save(summary=self.summary, asynchronous=True)
 
     def load(self, page):
         """

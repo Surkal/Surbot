@@ -8,12 +8,16 @@ from decorators import Insert
 
 
 class Inflection:
+    """
+    Create an inflection entry on the french wiktionary.
+    Only works for swedish nouns and non existing entry.
+    """
     @Insert
     def add_inflection(page, text, lang, *args, **kwargs):
         text = """== {{langue|%s}} ==\n=== {{S|nom|%s|flexion}} ===""" % (lang, lang)
         if kwargs['table']:
             text += f"\n{kwargs['table']}"
-        text += """\n'''{{subst:PAGENAME}}''' {{pron||sv}}\n# ''%s de'' {{lien|%s|%s}}.""" % args
+        text += """\n'''{{subst:PAGENAME}}''' {{pron||sv}}\n# ''%s de'' {{lien|%s|%s}}.\n""" % args
         return text
 
     @classmethod
@@ -54,7 +58,7 @@ class Inflection:
                 t = self.add_inflection(page_fr, page_fr.text, lang, c, title, lang, table=table)
                 if page_fr.text == t:
                     continue
-                t = sortkey(None, page_fr, t, lang=lang)
+                t = sortkey(page_fr, t, lang)
                 page_fr.text = t
                 try:
                     pywikibot.showDiff(page_fr.get(), page_fr.text)

@@ -23,7 +23,7 @@ class Parser:
     def __init__(self, func):
         self.func = func
 
-    def __call__(self, f, page, text, lang, **kwargs):
+    def __call__(self, page, text, lang, **kwargs):
         section, new_text = '', ''
         try:
             if kwargs:
@@ -42,14 +42,6 @@ class Parser:
         if not section:
             return text[:beg] + t + text[beg+end:]
         return text[:beg+beg_] + t + text[beg+beg_+end_:]
-
-
-    def __get__(self, obj, type=None):
-        if obj is None:
-            return self
-        def bound_decorated(*args, **kwargs):
-            return self.__call__(obj, *args, **kwargs)
-        return bound_decorated
 
     def parsing(self, text, lang, section=''):
         #TODO: does not support subsections present several times
